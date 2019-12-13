@@ -42,7 +42,7 @@ class Administration(commands.Cog):
 				await ctx.send(f'Unbanned {user.mention}')
 				return
 
-	@commands.command(brief='Delete a specifief amount of messages.')
+	@commands.command(brief='Delete a specified amount of messages.')
 	@commands.has_permissions(manage_messages=True)
 	async def clear(self,ctx, amount:int):
 		await ctx.channel.purge(limit=amount+1)
