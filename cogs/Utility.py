@@ -14,7 +14,7 @@ class Utility(commands.Cog):
 
 	@commands.command(brief='Check the bots latency to discord.')
 	async def ping(self,ctx):
-		await ctx.send(f'Pong! {round(self.client.latency*1000)}ms')
+		await ctx.send(f':ping_pong: Pong! {round(self.client.latency*1000)}ms')
 		print('Executed ping command.\n')
 
 	@commands.command(brief='Get a link to invite this bot to a server.')
