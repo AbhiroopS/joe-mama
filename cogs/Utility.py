@@ -14,13 +14,22 @@ class Utility(commands.Cog):
 
 	@commands.command(brief='Check the bots latency to discord.')
 	async def ping(self,ctx):
-		await ctx.send(f':ping_pong: Pong! {round(self.client.latency*1000)}ms')
+		embed=discord.Embed(
+			description=f":ping_pong: {round(self.client.latency*1000)}ms",
+		    colour=2864934
+		)
+		await ctx.send(embed=embed)
 		print('Executed ping command.\n')
 
 	@commands.command(brief='Get a link to invite this bot to a server.')
 	async def invite(self,ctx):
-		await ctx.send('> Use the following link to invite this bot to your server:')
-		await ctx.send('> https://discordapp.com/api/oauth2/authorize?client_id=654955750090866701&permissions=8&scope=bot')
+		embed = discord.Embed(
+			colour=2864934,
+		    title="To invite me to your server, use this link",
+			description="http://tiny.cc/Joe-Mama-Beta\n\n Use `>>help` to get a list of commands"
+		)
+		embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/654955750090866701/dd49fe7475433c1fb0ffa8a43dbd97fc.jpg?size=1024")
+		await ctx.send(embed=embed)
 		print('Executed invite command.\n')
 
 def setup(client):

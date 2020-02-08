@@ -1,6 +1,8 @@
 import discord
 import random
 import os
+
+from discord import Embed
 from discord.ext import commands
 
 class Administration(commands.Cog):
@@ -15,38 +17,65 @@ class Administration(commands.Cog):
 	@commands.command(brief='Make the bot say something.')
 	@commands.has_permissions(administrator=True)
 	async def say(self,ctx,*, msg: str):
-		await ctx.send(msg)
+		embed=discord.Embed(
+			description=f'{msg}',
+			color=2864934
+		)
+		await ctx.send(embed=embed)
 
 	@commands.command(brief='Kick an user from this server.')
 	@commands.has_permissions(kick_members=True)
 	async def kick(self,ctx,member:discord.Member,*,Reason=None):
 		await member.kick(reason=Reason)
-		await ctx.send(f'> {member} has been kicked from the Server.')
+		embed = discord.Embed(
+			description=f'{member} has been kicked from the server.\n\n Reason:`{Reason}`',
+			color=2864934
+		)
+		await ctx.send(embed=embed)
 
 	@commands.command(brief='Ban an user from this server.')
 	@commands.has_permissions(ban_members=True)
 	async def ban(self,ctx,member:discord.Member,*,Reason=None):
 		await member.ban(reason=Reason)
-		await ctx.send(f'{member.mention} has been banned from the Server.')
+		embed = discord.Embed(
+			description=f'{member} has been banned from the server.\n\n Reason:`{Reason}`',
+			color=2864934
+		)
+		await ctx.send(embed=embed)
 
 	@commands.command(brief='Unban a banned user. Provide Name and Discriminator.')
 	@commands.has_permissions(ban_members=True)
 	async def unban(self,ctx,*,member):
 		banned_users = await ctx.guild.bans()
 		member_name,member_discriminator=member.split('#')
+		embed = discord.Embed(
+			description=f'{member} is no longer banned.',
+			color=2864934
+		)
+		embed = discord.Embed(
+			description=f'{member} could not be found on list of banned users.',
+			color=2864934
+		)
+		await ctx.send(embed=embed)
 		for ban_entry in banned_users:
 			user=ban_entry.user
-
 			if(user.name, user.discriminator)==(member_name,member_discriminator):
 				await ctx.guild.unban(user)
-				await ctx.send(f'Unbanned {user.mention}')
+				await ctx.send(embed=embed)
+				return
+			else:
+				await ctx.send(embed=embed2)
 				return
 
 	@commands.command(brief='Delete a specified amount of messages.')
 	@commands.has_permissions(manage_messages=True)
 	async def clear(self,ctx, amount:int):
 		await ctx.channel.purge(limit=amount+1)
-		await ctx.send(f'> {amount} messages have been deleted.')
+		embed = discord.Embed(
+			description=f'{amount} messages have been deleted.',
+			color=2864934
+		)
+		await ctx.send(embed=embed)
 		print(f'Cleared {amount} messages.\n')
 
 def setup(client):

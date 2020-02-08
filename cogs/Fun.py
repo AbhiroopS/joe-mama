@@ -34,7 +34,12 @@ class Fun(commands.Cog):
 				'My sources say no.', 
 				'Outlook not so good.', 
 				'Very doubtful.']
-		await ctx.send(f'Question: {question}\nAnswer: {random.choice(responses)}')
+		embed = discord.Embed(
+			colour=2864934
+		)
+		embed.add_field(name=f":question: Question", value=f"{question}", inline="false")
+		embed.add_field(name=f":8ball: Answer", value=f"{random.choice(responses)}")
+		await ctx.send(embed=embed)
 		print('Executed 8Ball Command.\n')
 
 def setup(client):
