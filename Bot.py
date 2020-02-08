@@ -68,4 +68,4 @@ async def help(ctx):
 	await ctx.send(embed=embed)
 	print("Executed Help command.\n")
 
-client.run('NjU0OTU1NzUwMDkwODY2NzAx.XfNa0A.STGMTBWeKXHz2eJRGPAzOy8wkdI')
+client.run(TOKEN)
