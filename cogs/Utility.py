@@ -32,6 +32,19 @@ class Utility(commands.Cog):
 		await ctx.send(embed=embed)
 		print('Executed invite command.\n')
 
+	@commands.command(brief="Get the full size image of a user's avatar")
+	async def avatar(self,ctx,member: discord.Member=None):
+		member = ctx.author if not member else member
+		embed = discord.Embed(
+			colour=member.color, timestamp=ctx.message.created_at, title='Avatar URL', url=f'{member.avatar_url}')
+
+		embed.set_image(url=member.avatar_url)
+		embed.set_author(name=f'{member}')
+		embed.set_footer(text=f'Requested by {ctx.author}')
+
+		await ctx.send(embed=embed)
+		print("Executed Avatar command.\n")
+
 	@commands.command(brief='Get info about a user')
 	async def userinfo(self,ctx,member: discord.Member=None):
 		member=ctx.author if not member else member

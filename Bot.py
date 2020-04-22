@@ -12,8 +12,7 @@ client.remove_command('help')
 @client.event
 async def on_ready():
 	change_status.start()
-	print('Bot is '
-		  'ready.')
+	print('Bot is ready.\n')
 
 @tasks.loop(seconds=600)
 async def change_status():
@@ -64,6 +63,7 @@ async def help(ctx):
 	embed.add_field(name="invite", value="Get a link to invite this bot to your server",inline=False)
 	embed.add_field(name="ping", value="Check the bot's latency to discord",inline=False)
 	embed.add_field(name="userinfo <member>", value="Get information on a user",inline=False)
+	embed.add_field(name="avatar <member>", value="Get the full size Avatar of a use with its URL", inline=False)
 	embed.add_field(name="help", value="Show this message",inline=False)
 	await ctx.send(embed=embed)
 	print("Executed Help command.\n")
