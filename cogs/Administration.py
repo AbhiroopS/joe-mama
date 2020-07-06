@@ -52,7 +52,7 @@ class Administration(commands.Cog):
 			description=f'{member} is no longer banned.',
 			color=2864934
 		)
-		embed = discord.Embed(
+		embed2 = discord.Embed(
 			description=f'{member} could not be found on list of banned users.',
 			color=2864934
 		)
