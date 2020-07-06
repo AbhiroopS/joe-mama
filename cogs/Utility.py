@@ -20,7 +20,7 @@ class Utility(commands.Cog):
 		    colour=2864934
 		)
 		await ctx.send(embed=embed)
-		print('Executed ping command.\n')
+		print('\nExecuted ping command.\n')
 
 	@commands.command(brief='Get a link to invite this bot to a server.')
 	async def invite(self,ctx):
