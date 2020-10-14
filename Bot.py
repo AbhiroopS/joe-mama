@@ -1,7 +1,10 @@
 import discord
 import os
+import asyncio
 from discord.ext import commands, tasks
 from itertools import cycle
+
+# discord.py version = 1.4.1
 
 TOKEN=open("Token.txt","r").read()
 client = commands.Bot(command_prefix='>>')
@@ -52,21 +55,63 @@ for filename in os.listdir('./cogs'):
 
 @client.command()
 async def help(ctx):
-	embed=discord.Embed(color=ctx.author.color)
-	embed.set_author(name="Help",icon_url="https://clipartstation.com/wp-content/uploads/2018/09/clipart-question-mark-1-1.jpg")
-	embed.add_field(name="ban <member>",value="Ban a user",inline=False)
-	embed.add_field(name="kick <member>", value="Kick a user",inline=False)
-	embed.add_field(name="clear <x>", value="Delete last x messages",inline=False)
-	embed.add_field(name="say <text>", value="Make the bot say something",inline=False)
-	embed.add_field(name="unban <member#0000>", value="Unban an user, provide name and discriminator",inline=False)
-	embed.add_field(name="8ball <question>", value="Ask the Magical 8 Ball a question and get it answerered",inline=False)
-	embed.add_field(name="invite", value="Get a link to invite this bot to your server",inline=False)
-	embed.add_field(name="ping", value="Check the bot's latency to discord",inline=False)
-	embed.add_field(name="youtube <search term>", value="Search youtube", inline=False)
-	embed.add_field(name="userinfo <member>", value="Get information on a user",inline=False)
-	embed.add_field(name="avatar <member>", value="Get the full size Avatar of a user with its URL", inline=False)
-	embed.add_field(name="help", value="Show this message",inline=False)
-	await ctx.send(embed=embed)
-	print("Executed Help command.\n")
+	pages = 2
+	cur_page = 1
+
+	embed1=discord.Embed(color=ctx.author.color)
+	embed1.set_author(name="Help",icon_url="https://clipartstation.com/wp-content/uploads/2018/09/clipart-question-mark-1-1.jpg")
+	embed1.set_footer(text=f'Page 1/{pages} - Requested by {ctx.author}')
+	embed1.add_field(name="help", value="Show this message",inline=False)
+	embed1.add_field(name="ban <member>",value="Ban a user",inline=False)
+	embed1.add_field(name="kick <member>", value="Kick a user",inline=False)
+	embed1.add_field(name="clear <x>", value="Delete last x messages",inline=False)
+	embed1.add_field(name="unban <member#0000>", value="Unban an user, provide name and discriminator",inline=False)
+	embed1.add_field(name="say <text>", value="Make the bot say something",inline=False)
+
+	embed2=discord.Embed(color=ctx.author.color)
+	embed2.set_author(name="Help",icon_url="https://clipartstation.com/wp-content/uploads/2018/09/clipart-question-mark-1-1.jpg")
+	embed2.set_footer(text=f'Page 2/{pages} - Requested by {ctx.author}')
+	embed2.add_field(name="8ball <question>", value="Ask the Magical 8 Ball a question and get it answerered",inline=False)
+	embed2.add_field(name="invite", value="Get a link to invite this bot to your server",inline=False)
+	embed2.add_field(name="ping", value="Check the bot's latency to discord",inline=False)
+	embed2.add_field(name="youtube <search term>", value="Search youtube", inline=False)
+	embed2.add_field(name="userinfo <member>", value="Get information on a user",inline=False)
+	embed2.add_field(name="avatar <member>", value="Get the full size Avatar of a user with its URL", inline=False)
+	
+	contents = [ embed1 , embed2 ]
+	message = await ctx.send(embed=contents[cur_page-1])
+    # getting the message object for editing and reacting
+
+	await message.add_reaction("◀️")
+	await message.add_reaction("▶️")
+
+	def check(reaction, user):
+		return user == ctx.author and str(reaction.emoji) in ["◀️", "▶️"]
+		# This makes sure nobody except the command sender can interact with the "menu"
+
+	while True:
+		try:
+			reaction, user = await client.wait_for("reaction_add", timeout=60, check=check)
+			# waiting for a reaction to be added - times out after x seconds, 60 in this
+        	# example
+
+			if str(reaction.emoji) == "▶️" and cur_page != pages:
+				cur_page += 1
+				await message.edit(embed=contents[cur_page-1])
+				await message.remove_reaction(reaction, user)
+
+			elif str(reaction.emoji) == "◀️" and cur_page > 1:
+				cur_page -= 1
+				await message.edit(embed=contents[cur_page-1])
+				await message.remove_reaction(reaction, user)
+
+			else:
+				await message.remove_reaction(reaction, user)
+				# removes reactions if the user tries to go forward on the last page or
+				# backwards on the first page
+		except asyncio.TimeoutError:
+			await message.delete()
+			break
+			# ending the loop if user doesn't react after x seconds
 
 client.run(TOKEN)

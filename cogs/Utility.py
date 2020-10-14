@@ -3,6 +3,7 @@ import random
 import os
 from discord.ext import commands
 import urllib.parse, urllib.request,re
+import libs.anilist
 
 class Utility(commands.Cog):
 
@@ -69,6 +70,20 @@ class Utility(commands.Cog):
 		embed.add_field(name="Bot?", value=member.bot, inline=False)
 
 		await ctx.send(embed=embed)
+	
+	@commands.command(name="server", aliases=["guild"])
+	async def serverinfo(self, ctx, guild: discord.guild = None):
+		guild=ctx.guild if not guild else guild
+		embed = discord.Embed(title=ctx.guild.name, colour=ctx.author.color, timestamp=ctx.message.created_at)
+		embed.set_thumbnail(url=ctx.guild.icon_url_as(size=2048))
+		embed.set_footer(text=f'Requested by {ctx.author}')
+		embed.add_field(name="ID", value=ctx.guild.id)
+		embed.add_field(name="Owner", value=ctx.guild.owner.mention, inline=False)
+		embed.add_field(name="Region", value=ctx.guild.region, inline=False)
+		embed.add_field(name="Members", value=str(ctx.guild.member_count), inline=False)
+		embed.add_field(name="Text channels", value=str(len(ctx.guild.text_channels)), inline=False)
+		embed.add_field(name="Voice channels", value=str(len(ctx.guild.voice_channels)), inline=False)
+		await ctx.send(embed=embed)
 
 	@commands.command(aliases=['yt'], brief='Query youtube for a video using a search term')
 	async def youtube(self,ctx,*,search):
@@ -81,6 +96,28 @@ class Utility(commands.Cog):
 		search_results = re.findall('href=\"\\/watch\\?v=(.{11})',htm_content.read().decode())
 		await ctx.send('https://www.youtube.com/watch?v='+search_results[0])
 		print(f'Searched Youtube for {search}\n')
+
+	@commands.command(name="anime")
+	async def searchAnime(self, ctx, *, title):
+		embed = libs.anilist.animeSearch(title)
+		await ctx.send(embed=embed)
+
+	@commands.command(aliases=["mango", "m"])
+	async def manga(self,ctx, *, title):
+		embed = libs.anilist.mangaSearch(title)
+		await ctx.send(embed=embed)
+	
+	@commands.command()
+	async def vcmute(self,ctx):
+		vc = ctx.author.voice.channel
+		for member in vc.members:
+			await member.edit(mute=True)
+	
+	@commands.command()
+	async def vcunmute(self,ctx):
+		vc = ctx.author.voice.channel
+		for member in vc.members:
+			await member.edit(mute=False)
 
 def setup(client):
 	client.add_cog(Utility(client))
