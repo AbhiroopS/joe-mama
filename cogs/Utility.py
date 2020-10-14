@@ -97,8 +97,8 @@ class Utility(commands.Cog):
 		await ctx.send('https://www.youtube.com/watch?v='+search_results[0])
 		print(f'Searched Youtube for {search}\n')
 
-	@commands.command(name="anime")
-	async def searchAnime(self, ctx, *, title):
+	@commands.command(aliases=["animu", "a"])
+	async def anime(self, ctx, *, title):
 		embed = libs.anilist.animeSearch(title)
 		await ctx.send(embed=embed)
 
