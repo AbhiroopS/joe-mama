@@ -55,7 +55,7 @@ for filename in os.listdir('./cogs'):
 
 @client.command()
 async def help(ctx):
-	pages = 2
+	pages = 3
 	cur_page = 1
 
 	embed1=discord.Embed(color=ctx.author.color)
@@ -77,8 +77,16 @@ async def help(ctx):
 	embed2.add_field(name="youtube <search term>", value="Search youtube", inline=False)
 	embed2.add_field(name="userinfo <member>", value="Get information on a user",inline=False)
 	embed2.add_field(name="avatar <member>", value="Get the full size Avatar of a user with its URL", inline=False)
+
+	embed3=discord.Embed(color=ctx.author.color)
+	embed3.set_author(name="Help",icon_url="https://clipartstation.com/wp-content/uploads/2018/09/clipart-question-mark-1-1.jpg")
+	embed3.set_footer(text=f'Page 3/{pages} - Requested by {ctx.author}')
+	embed3.add_field(name="anime <search query>", value="Search for an Anime on Anlist",inline=False)
+	embed3.add_field(name="manga <search query>", value="Search for a Manga on Anilist",inline=False)
+	embed3.add_field(name="vcmute", value="Mute everyone in your voice channel", inline=False)
+	embed3.add_field(name="vcunmute", value="Unmute everyone in your voice channel", inline=False)
 	
-	contents = [ embed1 , embed2 ]
+	contents = [ embed1 , embed2, embed3 ]
 	message = await ctx.send(embed=contents[cur_page-1])
     # getting the message object for editing and reacting
 

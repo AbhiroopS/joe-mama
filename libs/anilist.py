@@ -31,7 +31,7 @@ def SearchByID():
         }
         averageScore
         favourites
-        studios
+        studios(isMain: true)
         {
             edges
             {
@@ -42,6 +42,7 @@ def SearchByID():
             }
         }
         chapters
+        genres
         volumes
         hashtag
         }
@@ -77,9 +78,14 @@ def SearchByTitle():
             month
             year
         }
+        endDate {
+            day
+            month
+            year
+        }
         averageScore
         favourites
-        studios
+        studios(isMain: true)
         {
             edges
             {
@@ -142,6 +148,30 @@ def replaceNone(text):
         return 'N/A'
     return text
 
+def formatconv(format):
+    switcher = {
+        "TV" : "TV",
+        "TV_SHORT" : "TV Short",
+        "MOVIE" : "Movie",
+        "SPECIAL" : "Special",
+        "OVA" : "OVA",
+        "ONA" : "ONA",
+        "MUSIC" : "Music",
+        "MANGA" : "Manga",
+        "NOVEL" : "Novel",
+        "ONE_SHOT" : "One Shot"
+    }
+    return switcher.get(format, "N/A")
+
+def statusconv(status):
+    switcher = {
+        "FINISHED": "Finished",
+        "RELEASING": "Releasing",
+        "NOT_YET_RELEASED": "Not Yet Released",
+        "CANCELLED": "Cancelled"
+    }
+    return switcher.get(status, "N/A")       
+
 def animeSearch(title):
     if title.isnumeric():
         query = SearchByID()
@@ -152,25 +182,51 @@ def animeSearch(title):
     if variables:
         result = run_query(query, variables)
         if not result:
-            return discord.Embed(description="There does not exist an anime with a title/ID of {}.".format(title))
+            return discord.Embed(description="There does not exist an anime with a title/ID of {}.".format(title))  
 
         embed = discord.Embed(
             colour=discord.Colour.blue(),
-            title=('{} ({}) {}'.format(result["data"]["Media"]["title"]["romaji"],
-                                       result["data"]["Media"]["title"]["english"],
-                                       result["data"]["Media"]["format"])),
+            title=('{}'.format(result["data"]["Media"]["title"]["romaji"])),
             url=result["data"]["Media"]["siteUrl"],
             description=(removeTags(result["data"]["Media"]["description"])).replace("&quot;", '"')
         )
-        embed.add_field(name="Status", value=result["data"]["Media"]["status"].upper(), inline=True)
+        embed.add_field(name="Type", value=formatconv(result["data"]["Media"]["format"]), inline=True)
+        embed.add_field(name="Status", value=statusconv(result["data"]["Media"]["status"]), inline=True)
         embed.add_field(name="Season",
-                        value='{} {}'.format(result["data"]["Media"]["season"], result["data"]["Media"]["seasonYear"]),
+                        value='{} {}'.format(result["data"]["Media"]["season"].capitalize(), result["data"]["Media"]["seasonYear"]),
                         inline=True)
-        embed.add_field(name="Number of Episodes", value=result["data"]["Media"]["episodes"], inline=True)
+        if result["data"]["Media"]['startDate']['day']:
+            embed.add_field(name='Start date',
+                            value='%s/%s/%s' % (result["data"]["Media"]['startDate']['day'],
+                                                result["data"]["Media"]['startDate']['month'],
+                                                result["data"]["Media"]['startDate']['year']),
+                            inline=True)
+        else:
+            embed.add_field(name='Start date', value='-', inline=True)
+
+        if result["data"]["Media"]['endDate']['day']:
+            embed.add_field(name='End date',
+                            value='%s/%s/%s' % (result["data"]["Media"]['endDate']['day'],
+                                                result["data"]["Media"]['endDate']['month'],
+                                                result["data"]["Media"]['endDate']['year']),
+                            inline=True)
+        else:
+            embed.add_field(name='End date', value='-', inline=True)
+        
+        embed.add_field(name="Episodes", value=result["data"]["Media"]["episodes"], inline=True)
         embed.add_field(name="Duration",
                         value='{} minutes/episode'.format(result["data"]["Media"]["duration"], inline=True))
+
+        if result["data"]["Media"]["studios"]["edges"][0]["node"]["name"]:
+            embed.add_field(name='Studio',
+                            value=result["data"]["Media"]["studios"]["edges"][0]["node"]["name"],
+                            inline=True)
+        else:
+            embed.add_field(name='Studio', value='-', inline=True)
+        
         embed.add_field(name="Favourites", value=result["data"]["Media"]["favourites"], inline=True)
         embed.add_field(name="Average Score", value='{}%'.format(result["data"]["Media"]["averageScore"], inline=True))
+        embed.add_field(name='Genres', value=', '.join(result["data"]["Media"]['genres']), inline=True)
         embed.set_thumbnail(url=result["data"]["Media"]["coverImage"]["large"])
         return embed
 
@@ -188,23 +244,36 @@ def mangaSearch(title):
 
         embed = discord.Embed(
             colour=discord.Colour.blue(),
-            title=('{} ({}) {}'.format(result["data"]["Media"]["title"]["romaji"],
-                                       result["data"]["Media"]["title"]["english"],
-                                       result["data"]["Media"]["format"])),
+            title=('{} ({})'.format(result["data"]["Media"]["title"]["romaji"],
+                                       result["data"]["Media"]["title"]["english"])),
             url=result["data"]["Media"]["siteUrl"],
             description=(removeTags(result["data"]["Media"]["description"])).replace("&quot;", '"')
         )
+        
+        embed.add_field(name="Type", value=formatconv(result["data"]["Media"]["format"]), inline=True)
+        embed.add_field(name="Status", value=statusconv(result["data"]["Media"]["status"]), inline=True)
+        if result["data"]["Media"]['startDate']['day']:
+            embed.add_field(name='Start date',
+                            value='%s/%s/%s' % (result["data"]["Media"]['startDate']['day'],
+                                                result["data"]["Media"]['startDate']['month'],
+                                                result["data"]["Media"]['startDate']['year']),
+                            inline=True)
+        else:
+            embed.add_field(name='Start date', value='-', inline=True)
 
-        embed.add_field(name="Status", value=result["data"]["Media"]["status"].upper(), inline=True)
-        embed.add_field(name="Start Date",
-                        value='{}/{}/{}'.format(result["data"]["Media"]["startDate"]["day"],
-                                                result["data"]["Media"]["startDate"]["month"],
-                                                result["data"]["Media"]["startDate"]["year"]),
-                        inline=True)
-        embed.add_field(name="Number of Chapters", value=replaceNone(result["data"]["Media"]["chapters"]), inline=True)
-        embed.add_field(name="Number of Volumes", value=replaceNone(result["data"]["Media"]["volumes"]), inline=True)
+        if result["data"]["Media"]['endDate']['day']:
+            embed.add_field(name='End date',
+                            value='%s/%s/%s' % (result["data"]["Media"]['endDate']['day'],
+                                                result["data"]["Media"]['endDate']['month'],
+                                                result["data"]["Media"]['endDate']['year']),
+                            inline=True)
+        else:
+            embed.add_field(name='End date', value='-', inline=True)
+        embed.add_field(name="Chapters", value=replaceNone(result["data"]["Media"]["chapters"]), inline=True)
+        embed.add_field(name="Volumes", value=replaceNone(result["data"]["Media"]["volumes"]), inline=True)
         embed.add_field(name="Favourites", value=result["data"]["Media"]["favourites"], inline=True)
         embed.add_field(name="Average Score",
                         value='{}'.format(replaceNone(result["data"]["Media"]["averageScore"]), inline=True))
+        embed.add_field(name='Genres', value=', '.join(result["data"]["Media"]['genres']), inline=True)
         embed.set_thumbnail(url=result["data"]["Media"]["coverImage"]["large"])
         return embed
