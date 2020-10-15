@@ -1,7 +1,6 @@
 import discord
 import random
 import os
-
 from discord import Embed
 from discord.ext import commands
 
@@ -15,7 +14,7 @@ class Administration(commands.Cog):
 		print('Administration Module is online.')
 
 	@commands.command(brief='Make the bot say something.')
-	@commands.has_permissions(administrator=True)
+	@commands.has_guild_permissions(administrator=True)
 	async def say(self,ctx,*, msg: str):
 		embed=discord.Embed(
 			description=f'{msg}',
@@ -24,7 +23,7 @@ class Administration(commands.Cog):
 		await ctx.send(embed=embed)
 
 	@commands.command(brief='Kick an user from this server.')
-	@commands.has_permissions(kick_members=True)
+	@commands.has_guild_permissions(kick_members=True)
 	async def kick(self,ctx,member:discord.Member,*,Reason=None):
 		await member.kick(reason=Reason)
 		embed = discord.Embed(
@@ -34,7 +33,7 @@ class Administration(commands.Cog):
 		await ctx.send(embed=embed)
 
 	@commands.command(brief='Ban an user from this server.')
-	@commands.has_permissions(ban_members=True)
+	@commands.has_guild_permissions(ban_members=True)
 	async def ban(self,ctx,member:discord.Member,*,Reason=None):
 		await member.ban(reason=Reason)
 		embed = discord.Embed(
@@ -44,7 +43,7 @@ class Administration(commands.Cog):
 		await ctx.send(embed=embed)
 
 	@commands.command(brief='Unban a banned user. Provide Name and Discriminator.')
-	@commands.has_permissions(ban_members=True)
+	@commands.has_guild_permissions(ban_members=True)
 	async def unban(self,ctx,*,member):
 		banned_users = await ctx.guild.bans()
 		member_name,member_discriminator=member.split('#')
@@ -68,7 +67,7 @@ class Administration(commands.Cog):
 				return
 
 	@commands.command(brief='Delete a specified amount of messages.')
-	@commands.has_permissions(manage_messages=True)
+	@commands.has_guild_permissions(manage_messages=True)
 	async def clear(self,ctx, amount:int):
 		await ctx.channel.purge(limit=amount+1)
 		embed = discord.Embed(
@@ -79,14 +78,14 @@ class Administration(commands.Cog):
 		print(f'Cleared {amount} messages.\n')
 	
 	@commands.command()
-	@commands.has_permissions(mute_members=True)
+	@commands.has_guild_permissions(mute_members=True)
 	async def vcmute(self,ctx):
 		vc = ctx.author.voice.channel
 		for member in vc.members:
 			await member.edit(mute=True)
 	
 	@commands.command()
-	@commands.has_permissions(mute_members=True)
+	@commands.has_guild_permissions(mute_members=True)
 	async def vcunmute(self,ctx):
 		vc = ctx.author.voice.channel
 		for member in vc.members:

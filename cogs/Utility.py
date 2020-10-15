@@ -3,7 +3,7 @@ import random
 import os
 from discord.ext import commands
 import urllib.parse, urllib.request,re
-import libs.anilist
+from libs.anilist import animeSearch,mangaSearch
 
 class Utility(commands.Cog):
 
@@ -18,7 +18,7 @@ class Utility(commands.Cog):
 	async def ping(self,ctx):
 		embed=discord.Embed(
 			description=f":ping_pong: {round(self.client.latency*1000)}ms",
-		    colour=2864934
+			colour=2864934
 		)
 		await ctx.send(embed=embed)
 		print('\nExecuted ping command.\n')
@@ -27,7 +27,7 @@ class Utility(commands.Cog):
 	async def invite(self,ctx):
 		embed = discord.Embed(
 			colour=2864934,
-		    title="To invite me to your server, use this link",
+			title="To invite me to your server, use this link",
 			description="http://bit.ly/joe-mama-beta\n\n Use `>>help` to get a list of commands"
 		)
 		embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/654955750090866701/dd49fe7475433c1fb0ffa8a43dbd97fc.jpg?size=1024")
@@ -100,12 +100,12 @@ class Utility(commands.Cog):
 
 	@commands.command(aliases=["animu", "a"])
 	async def anime(self, ctx, *, title):
-		embed = libs.anilist.animeSearch(title)
+		embed = animeSearch(title)
 		await ctx.send(embed=embed)
 
 	@commands.command(aliases=["mango", "m"])
 	async def manga(self,ctx, *, title):
-		embed = libs.anilist.mangaSearch(title)
+		embed = mangaSearch(title)
 		await ctx.send(embed=embed)
 
 def setup(client):
