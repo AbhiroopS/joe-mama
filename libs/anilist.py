@@ -244,8 +244,7 @@ def mangaSearch(title):
 
         embed = discord.Embed(
             colour=discord.Colour.blue(),
-            title=('{} ({})'.format(result["data"]["Media"]["title"]["romaji"],
-                                       result["data"]["Media"]["title"]["english"])),
+            title=('{}'.format(result["data"]["Media"]["title"]["romaji"])),
             url=result["data"]["Media"]["siteUrl"],
             description=(removeTags(result["data"]["Media"]["description"])).replace("&quot;", '"')
         )

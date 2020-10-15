@@ -28,7 +28,7 @@ class Utility(commands.Cog):
 		embed = discord.Embed(
 			colour=2864934,
 		    title="To invite me to your server, use this link",
-			description="http://tiny.cc/Joe-Mama-Beta\n\n Use `>>help` to get a list of commands"
+			description="http://bit.ly/joe-mama-beta\n\n Use `>>help` to get a list of commands"
 		)
 		embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/654955750090866701/dd49fe7475433c1fb0ffa8a43dbd97fc.jpg?size=1024")
 		await ctx.send(embed=embed)
@@ -85,17 +85,18 @@ class Utility(commands.Cog):
 		embed.add_field(name="Voice channels", value=str(len(ctx.guild.voice_channels)), inline=False)
 		await ctx.send(embed=embed)
 
-	@commands.command(aliases=['yt'], brief='Query youtube for a video using a search term')
-	async def youtube(self,ctx,*,search):
-		query_string = urllib.parse.urlencode({
-			'search_query': search
-		})
-		htm_content = urllib.request.urlopen(
-			'http://youtube.com/results?'+query_string
-		)
-		search_results = re.findall('href=\"\\/watch\\?v=(.{11})',htm_content.read().decode())
-		await ctx.send('https://www.youtube.com/watch?v='+search_results[0])
-		print(f'Searched Youtube for {search}\n')
+	# ***************Youtube Command Broken atm, might fix later***************
+	# @commands.command(aliases=['yt'], brief='Query youtube for a video using a search term')
+	# async def youtube(self,ctx,*,search):
+	# 	query_string = urllib.parse.urlencode({
+	# 		'search_query': search
+	# 	})
+	# 	htm_content = urllib.request.urlopen(
+	# 		'http://youtube.com/results?'+query_string
+	# 	)
+	# 	search_results = re.findall('href=\"\\/watch\\?v=(.{11})',htm_content.read().decode())
+	# 	await ctx.send('https://www.youtube.com/watch?v='+search_results[0])
+	# 	print(f'Searched Youtube for {search}\n')
 
 	@commands.command(aliases=["animu", "a"])
 	async def anime(self, ctx, *, title):
