@@ -1,3 +1,2 @@
 Token.txt
-.gitignore
-cogs\__pycache__
+__pycache__
