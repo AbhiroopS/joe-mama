@@ -77,6 +77,20 @@ class Administration(commands.Cog):
 		)
 		await ctx.send(embed=embed)
 		print(f'Cleared {amount} messages.\n')
+	
+	@commands.command()
+	@commands.has_permissions(mute_members=True)
+	async def vcmute(self,ctx):
+		vc = ctx.author.voice.channel
+		for member in vc.members:
+			await member.edit(mute=True)
+	
+	@commands.command()
+	@commands.has_permissions(mute_members=True)
+	async def vcunmute(self,ctx):
+		vc = ctx.author.voice.channel
+		for member in vc.members:
+			await member.edit(mute=False)
 
 def setup(client):
 	client.add_cog(Administration(client))

@@ -106,18 +106,6 @@ class Utility(commands.Cog):
 	async def manga(self,ctx, *, title):
 		embed = libs.anilist.mangaSearch(title)
 		await ctx.send(embed=embed)
-	
-	@commands.command()
-	async def vcmute(self,ctx):
-		vc = ctx.author.voice.channel
-		for member in vc.members:
-			await member.edit(mute=True)
-	
-	@commands.command()
-	async def vcunmute(self,ctx):
-		vc = ctx.author.voice.channel
-		for member in vc.members:
-			await member.edit(mute=False)
 
 def setup(client):
 	client.add_cog(Utility(client))
