@@ -3,10 +3,10 @@ import os
 import asyncio
 from discord.ext import commands, tasks
 from itertools import cycle
+from Token import discordtoken
 
 # discord.py version = 1.4.1
 
-TOKEN=open("Token.txt","r").read()
 client = commands.Bot(command_prefix='>>')
 status = cycle(['With deez nuts','with yo mama'])
 
@@ -114,4 +114,4 @@ async def help(ctx):
 			await message.delete()
 			break
 
-client.run(TOKEN)
+client.run(discordtoken)

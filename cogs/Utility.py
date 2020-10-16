@@ -4,6 +4,7 @@ import os
 from discord.ext import commands
 import urllib.parse, urllib.request,re
 from libs.anilist import animeSearch,mangaSearch
+from libs.osu import osuuser
 
 class Utility(commands.Cog):
 
@@ -53,22 +54,16 @@ class Utility(commands.Cog):
 		roles = [role for role in member.roles]
 		embed = discord.Embed(
 			colour=member.color, timestamp=ctx.message.created_at)
-
 		embed.set_author(name=f'User info - {member}')
 		embed.set_thumbnail(url=member.avatar_url)
 		embed.set_footer(text=f'Requested by {ctx.author}')
-
 		embed.add_field(name="ID:",value=member.id)
 		embed.add_field(name="Guild Name:", value=member.display_name, inline=False)
-
 		embed.add_field(name="Created at:", value=member.created_at.strftime("%a %#d %B %Y, %I:%M %p UTC"), inline=False)
 		embed.add_field(name="Joined at:", value=member.joined_at.strftime("%a %#d %B %Y, %I:%M %p UTC"))
-
 		embed.add_field(name=f'Roles ({len(roles)})', value=" ".join([role.mention for role in roles]), inline=False)
 		embed.add_field(name="Top Role:", value=member.top_role.mention)
-
 		embed.add_field(name="Bot?", value=member.bot, inline=False)
-
 		await ctx.send(embed=embed)
 	
 	@commands.command(name="server", aliases=["guild"])
@@ -107,6 +102,19 @@ class Utility(commands.Cog):
 	async def manga(self,ctx, *, title):
 		embed = mangaSearch(title)
 		await ctx.send(embed=embed)
+
+	@commands.command(brief="Get info on an osu user")
+	async def osu(self, ctx, *, username=None):
+		if username==None:
+			embed = discord.Embed(
+				colour=discord.Color.red(),
+				description="Please provide a Username"
+			)
+			await ctx.send(embed=embed)
+		else:
+			embed = osuuser(username)
+			embed.set_footer(text=f'Requested by {ctx.author}')
+			await ctx.send(embed=embed)
 
 def setup(client):
 	client.add_cog(Utility(client))
