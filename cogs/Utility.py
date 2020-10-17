@@ -31,9 +31,10 @@ class Utility(commands.Cog):
         embed = discord.Embed(
             colour=2864934,
             title="To invite me to your server, use this link",
-            description="http://bit.ly/joe-mama-beta\n\n Use `>>help` to get a list of commands"
+            description="Not a Public Bot\n\n Use `>>help` to get a list of commands"
         )
-        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/654955750090866701/dd49fe7475433c1fb0ffa8a43dbd97fc.jpg?size=1024")
+        member=ctx.guild.get_member(self.client.user.id)
+        embed.set_thumbnail(url=member.avatar_url)
         await ctx.send(embed=embed)
         print('Executed invite command.\n')
 
@@ -68,7 +69,7 @@ class Utility(commands.Cog):
         embed.add_field(name="Bot?", value=member.bot, inline=False)
         await ctx.send(embed=embed)
     
-    @commands.command(name="server", aliases=["guild"])
+    @commands.command(aliases=["guild", "server"])
     async def serverinfo(self, ctx, guild: discord.guild = None):
         guild=ctx.guild if not guild else guild
         embed = discord.Embed(title=ctx.guild.name, colour=ctx.author.color, timestamp=ctx.message.created_at)
