@@ -5,6 +5,8 @@ from discord.ext import commands
 import urllib.parse, urllib.request,re
 from libs.anilist import animeSearch,mangaSearch
 from libs.osu import osuuser
+from Token import googleAPI
+import requests
 
 class Utility(commands.Cog):
 
@@ -80,18 +82,12 @@ class Utility(commands.Cog):
         embed.add_field(name="Voice channels", value=str(len(ctx.guild.voice_channels)), inline=False)
         await ctx.send(embed=embed)
 
-    # ***************Youtube Command Broken atm, might fix later***************
-    # @commands.command(aliases=['yt'], brief='Query youtube for a video using a search term')
-    # async def youtube(self,ctx,*,search):
-    # 	query_string = urllib.parse.urlencode({
-    # 		'search_query': search
-    # 	})
-    # 	htm_content = urllib.request.urlopen(
-    # 		'http://youtube.com/results?'+query_string
-    # 	)
-    # 	search_results = re.findall('href=\"\\/watch\\?v=(.{11})',htm_content.read().decode())
-    # 	await ctx.send('https://www.youtube.com/watch?v='+search_results[0])
-    # 	print(f'Searched Youtube for {search}\n')
+    @commands.command(aliases=['yt'], brief='Query for a youtube video')
+    async def youtube(self, ctx, *, search):
+        url=f'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&order=relevance&q={search}&key={googleAPI}'
+        response = requests.get(url, verify=True)
+        data=response.json()
+        await ctx.send(f':mag: **| https://www.youtube.com/watch?v={data["items"][0]["id"]["videoId"]}**')
 
     @commands.command(aliases=["animu", "a"])
     async def anime(self, ctx, *, title):

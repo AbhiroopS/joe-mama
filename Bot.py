@@ -84,6 +84,8 @@ async def help(ctx):
     embed3.add_field(name="manga <search query>", value="Search for a Manga on Anilist",inline=False)
     embed3.add_field(name="vcmute", value="Mute everyone in your voice channel", inline=False)
     embed3.add_field(name="vcunmute", value="Unmute everyone in your voice channel", inline=False)
+    embed3.add_field(name="osu <username>", value="Get information on someone's osu! profile. Only supports osu!standard at the moment", inline=False)
+    embed3.add_field(name="yt <query>", value="Query youtube for a video", inline=False)
 
     contents = [ embed1 , embed2, embed3 ]
     message = await ctx.send(embed=contents[cur_page-1])
