@@ -1,6 +1,7 @@
 import discord
 import random
 import os
+import aiohttp, asyncio, async_timeout
 from discord.ext import commands
 import urllib.parse, urllib.request,re
 from libs.anilist import animeSearch,mangaSearch
@@ -12,6 +13,22 @@ class Utility(commands.Cog):
 
     def __init__(self,client):
         self.client=client
+    
+    async def gametoid(self, gamename):
+        """Convert a game name to its ID"""
+        session = aiohttp.ClientSession()
+
+        async with session.get("http://api.steampowered.com/ISteamApps/GetAppList/v2") as r:
+            response = await r.json()
+        response = response['applist']['apps']
+        try:
+            gameid = next((item for item in response if item["name"] == gamename))
+        except StopIteration:
+            session.close()
+            return False
+        gameid = gameid['appid']
+        await session.close()
+        return gameid
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -112,6 +129,14 @@ class Utility(commands.Cog):
             embed = osuuser(username)
             embed.set_footer(text=f'Requested by {ctx.author}')
             await ctx.send(embed=embed)
+    
+    @commands.command(brief="Get the Store Link for a Steam app")
+    async def steam(self, ctx, *, gamename):
+            gameid=await self.gametoid(gamename)
+            if gameid==False:
+                await ctx.send("Game not Found")
+            else:
+                await ctx.send(f'https://store.steampowered.com/app/{gameid}/')
 
 def setup(client):
     client.add_cog(Utility(client))

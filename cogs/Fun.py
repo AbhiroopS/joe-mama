@@ -1,6 +1,7 @@
 import discord
 import random
 import os
+import requests
 from discord.ext import commands
 
 class Fun(commands.Cog):
@@ -41,6 +42,20 @@ class Fun(commands.Cog):
         embed.add_field(name=f":8ball: Answer", value=f"{random.choice(responses)}")
         await ctx.send(embed=embed)
         print('Executed 8Ball Command.\n')
+    
+    @commands.command(aliases=["meow"])
+    async def cat(self, ctx):
+        url="http://aws.random.cat/meow"
+        response = requests.get(url)
+        data=response.json()
+        await ctx.send(f'{data["file"]}')
+
+    @commands.command(aliases=["woof"])
+    async def dog(self, ctx):
+        url="https://random.dog/woof.json"
+        response = requests.get(url)
+        data=response.json()
+        await ctx.send(f'{data["url"]}')
 
 def setup(client):
     client.add_cog(Fun(client))

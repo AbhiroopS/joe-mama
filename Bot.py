@@ -5,7 +5,7 @@ from discord.ext import commands, tasks
 from itertools import cycle
 from Token import discordtoken
 
-# discord.py version = 1.4.1
+# discord.py version = 1.5.0
 
 client = commands.Bot(command_prefix='>>')
 status = cycle(['With deez nuts','with yo mama'])
@@ -55,7 +55,7 @@ for filename in os.listdir('./cogs'):
 
 @client.command()
 async def help(ctx):
-    pages = 3
+    pages = 4
     cur_page = 1
 
     embed1=discord.Embed(color=ctx.author.color)
@@ -86,8 +86,15 @@ async def help(ctx):
     embed3.add_field(name="vcunmute", value="Unmute everyone in your voice channel", inline=False)
     embed3.add_field(name="osu <username>", value="Get information on someone's osu! profile. Only supports osu!standard at the moment", inline=False)
     embed3.add_field(name="yt <query>", value="Query youtube for a video", inline=False)
+    embed3.add_field(name="cat", value="Get a random cat picture", inline=False)
 
-    contents = [ embed1 , embed2, embed3 ]
+    embed4=discord.Embed(color=ctx.author.color)
+    embed4.set_author(name="Help", icon_url="https://clipartstation.com/wp-content/uploads/2018/09/clipart-question-mark-1-1.jpg")
+    embed4.set_footer(text=f'Page 4/{pages} - Requested by {ctx.author}')
+    embed4.add_field(name="dog", value="Get a random dog picture", inline=False)
+    embed4.add_field(name="steam <search query>", value="Get a link to a game from the Steam store (may be slow/not work)", inline=False)
+
+    contents = [ embed1 , embed2, embed3, embed4]
     message = await ctx.send(embed=contents[cur_page-1])
 
     await message.add_reaction("◀️")
