@@ -2,6 +2,7 @@ import discord
 import random
 import os
 import requests
+from Config import prefix
 from discord.ext import commands
 
 class Fun(commands.Cog):
@@ -13,7 +14,7 @@ class Fun(commands.Cog):
     async def on_ready(self):
         print('Fun Module is online.')
 
-    @commands.command(name='8ball',brief='Ask the Magical 8 Ball a question and get it answered.')
+    @commands.command(name='8ball',brief='Ask the Magical 8 Ball a question and get it answered.', usage=f'{prefix}8ball [Question]')
     async def _8ball(self,ctx,*,question):
         responses = ['It is certain.', 
                 'It is decidedly so.', 
@@ -43,14 +44,14 @@ class Fun(commands.Cog):
         await ctx.send(embed=embed)
         print('Executed 8Ball Command.\n')
     
-    @commands.command(aliases=["meow"])
+    @commands.command(brief="Get a random Cat image from https://random.cat", aliases=["meow"], usage=f'{prefix}cat')
     async def cat(self, ctx):
         url="http://aws.random.cat/meow"
         response = requests.get(url)
         data=response.json()
         await ctx.send(f'{data["file"]}')
 
-    @commands.command(aliases=["woof"])
+    @commands.command(brief="Get a random Dog image from https://random.dog", aliases=["woof"], usage=f'{prefix}dog')
     async def dog(self, ctx):
         url="https://random.dog/woof.json"
         response = requests.get(url)

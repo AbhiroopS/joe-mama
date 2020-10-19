@@ -1,5 +1,5 @@
 import requests, json, discord, math
-from Token import osu
+from Config import osu
 
 def secondsToText(secs):
         result = "0 seconds"

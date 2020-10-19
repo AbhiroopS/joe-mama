@@ -2,12 +2,13 @@ import discord
 import random
 import os
 import aiohttp, asyncio, async_timeout
-from discord.ext import commands
+import requests
 import urllib.parse, urllib.request,re
+from Config import prefix
+from discord.ext import commands
 from libs.anilist import animeSearch,mangaSearch
 from libs.osu import osuuser
-from Token import googleAPI
-import requests
+from Config import googleAPI
 
 class Utility(commands.Cog):
 
@@ -34,7 +35,7 @@ class Utility(commands.Cog):
     async def on_ready(self):
         print('Utility Module is online.')
 
-    @commands.command(brief='Check the bots latency to discord.')
+    @commands.command(brief='Check the bots latency to discord.', usage=f'{prefix}ping')
     async def ping(self,ctx):
         embed=discord.Embed(
             description=f":ping_pong: {round(self.client.latency*1000)}ms",
@@ -43,19 +44,19 @@ class Utility(commands.Cog):
         await ctx.send(embed=embed)
         print('\nExecuted ping command.\n')
 
-    @commands.command(brief='Get a link to invite this bot to a server.')
+    @commands.command(brief='Get a link to invite this bot to a server.', usage=f'{prefix}invite')
     async def invite(self,ctx):
         embed = discord.Embed(
             colour=2864934,
             title="To invite me to your server, use this link",
-            description="Not a Public Bot\n\n Use `>>help` to get a list of commands"
+            description=f"[Bot is currently not publically Available]\n\n Use `{prefix}help` to get a list of commands"
         )
         member=ctx.guild.get_member(self.client.user.id)
         embed.set_thumbnail(url=member.avatar_url)
         await ctx.send(embed=embed)
         print('Executed invite command.\n')
 
-    @commands.command(brief="Get the full size image of a user's avatar")
+    @commands.command(brief="Get the full size image of a user's avatar",aliases=["av"], usage=f'{prefix}avatar @SomeUser')
     async def avatar(self,ctx,member: discord.Member=None):
         member = ctx.author if not member else member
         embed = discord.Embed(
@@ -68,7 +69,7 @@ class Utility(commands.Cog):
         await ctx.send(embed=embed)
         print("Executed Avatar command.\n")
 
-    @commands.command(brief='Get info about a user')
+    @commands.command(brief='Get info about a user', aliases=["uinfo"], usage=f'{prefix}userinfo @SomeUser')
     async def userinfo(self,ctx,member: discord.Member=None):
         member=ctx.author if not member else member
         roles = [role for role in member.roles]
@@ -86,7 +87,7 @@ class Utility(commands.Cog):
         embed.add_field(name="Bot?", value=member.bot, inline=False)
         await ctx.send(embed=embed)
     
-    @commands.command(aliases=["guild", "server"])
+    @commands.command(brief='Get information about this server', aliases=["guild", "server"], usage=f'{prefix}serverinfo')
     async def serverinfo(self, ctx, guild: discord.guild = None):
         guild=ctx.guild if not guild else guild
         embed = discord.Embed(title=ctx.guild.name, colour=ctx.author.color, timestamp=ctx.message.created_at)
@@ -100,24 +101,24 @@ class Utility(commands.Cog):
         embed.add_field(name="Voice channels", value=str(len(ctx.guild.voice_channels)), inline=False)
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=['yt'], brief='Query for a youtube video')
+    @commands.command(aliases=['yt'], brief='Query for a youtube video', usage=f'{prefix}youtube [Search Query]')
     async def youtube(self, ctx, *, search):
         url=f'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&order=relevance&q={search}&key={googleAPI}'
         response = requests.get(url, verify=True)
         data=response.json()
         await ctx.send(f':mag: **| https://www.youtube.com/watch?v={data["items"][0]["id"]["videoId"]}**')
 
-    @commands.command(aliases=["animu", "a"])
+    @commands.command(brief="Search Anilist for an anime", aliases=["animu", "a"], usage=f'{prefix}anime [Search Query]')
     async def anime(self, ctx, *, title):
         embed = animeSearch(title)
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["mango", "m"])
+    @commands.command(brief="Search Anilist for a manga", aliases=["mango", "m"], usage=f'{prefix}manga [Search Query]')
     async def manga(self,ctx, *, title):
         embed = mangaSearch(title)
         await ctx.send(embed=embed)
 
-    @commands.command(brief="Get info on an osu user")
+    @commands.command(brief="Get info on an osu user", usage=f'{prefix}osu [osu Username]')
     async def osu(self, ctx, *, username=None):
         if username==None:
             embed = discord.Embed(
@@ -130,7 +131,7 @@ class Utility(commands.Cog):
             embed.set_footer(text=f'Requested by {ctx.author}')
             await ctx.send(embed=embed)
     
-    @commands.command(brief="Get the Store Link for a Steam app")
+    @commands.command(brief="Get the Store Link for a Steam app", usage=f'{prefix}steam [Search Query]')
     async def steam(self, ctx, *, gamename):
             gameid=await self.gametoid(gamename)
             if gameid==False:
