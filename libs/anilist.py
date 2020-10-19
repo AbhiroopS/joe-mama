@@ -234,11 +234,14 @@ def mangaSearch(title):
     if title.isnumeric():
         query = SearchByID()
         variables = GetByID('manga', title)
+
     elif not title.isnumeric():
         query = SearchByTitle()
         variables = GetByTitle('manga', title)
+
     if variables:
         result = run_query(query, variables)
+
         if not result:
             return discord.Embed(description="There does not exist a manga with a title/ID of {}.".format(title))
 
@@ -251,6 +254,7 @@ def mangaSearch(title):
         
         embed.add_field(name="Type", value=formatconv(result["data"]["Media"]["format"]), inline=True)
         embed.add_field(name="Status", value=statusconv(result["data"]["Media"]["status"]), inline=True)
+
         if result["data"]["Media"]['startDate']['day']:
             embed.add_field(name='Start date',
                             value='%s/%s/%s' % (result["data"]["Media"]['startDate']['day'],
@@ -268,6 +272,7 @@ def mangaSearch(title):
                             inline=True)
         else:
             embed.add_field(name='End date', value='-', inline=True)
+            
         embed.add_field(name="Chapters", value=replaceNone(result["data"]["Media"]["chapters"]), inline=True)
         embed.add_field(name="Volumes", value=replaceNone(result["data"]["Media"]["volumes"]), inline=True)
         embed.add_field(name="Favourites", value=result["data"]["Media"]["favourites"], inline=True)
