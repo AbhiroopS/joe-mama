@@ -1,6 +1,7 @@
 import discord
 import random
 import os
+import asyncio
 from Config import prefix
 from discord import Embed
 from discord.ext import commands
@@ -71,11 +72,13 @@ class Administration(commands.Cog):
     async def clear(self,ctx, amount:int):
         await ctx.channel.purge(limit=amount+1)
         embed = discord.Embed(
-            description=f'{amount} messages have been deleted.',
+            description=f'Deleted {amount} messages.',
             color=2864934
         )
-        await ctx.send(embed=embed)
-        print(f'Cleared {amount} messages.\n')
+        msg = await ctx.send(embed=embed)
+        print(f'Cleared {amount} messages.')
+        await asyncio.sleep(5)
+        await msg.delete()
     
     @commands.command(brief='Mute everyone in your voice channel', aliases=["mute"], usage=f'{prefix}vcmute')
     @commands.has_guild_permissions(mute_members=True)
