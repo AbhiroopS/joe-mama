@@ -17,6 +17,7 @@ client.remove_command('help')
 @client.event
 async def on_ready():
     # change_status.start()
+    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=status))
     print('Bot is ready.\n')
 
 # @tasks.loop(seconds=600)
