@@ -68,7 +68,7 @@ async def help(ctx):
             return ali
     
     Home=discord.Embed(color=ctx.author.color,
-    description=f"An open source multipurpose discord bot written in python by Abhiroop#7339\n\n**Click on the given reactions to view commands relevant to the following categories:**\n\n 🏠 : View this Page\n🎱 : Fun and Games\n🔍 : Utility\n🛠️ : Administration\n"
+    description=f"An open source multipurpose discord bot written in python by Abhiroop#7339\n\n**Click on the given reactions to view commands relevant to the following categories:**\n\n🏠 : View this Page\n🎱 : Fun and Games\n🔍 : Utility\n🛠️ : Administration\n"
     )
     Home.set_author(name="Help Menu", icon_url="https://clipartstation.com/wp-content/uploads/2018/09/clipart-question-mark-1-1.jpg")
     Home.set_footer(text=f'Requested by {ctx.author}')

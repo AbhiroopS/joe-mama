@@ -4,6 +4,8 @@ import os
 import aiohttp, asyncio, async_timeout
 import requests
 import urllib.parse, urllib.request,re
+import string
+from bs4 import BeautifulSoup
 from Config import prefix
 from discord.ext import commands
 from libs.anilist import animeSearch,mangaSearch
@@ -14,22 +16,6 @@ class Utility(commands.Cog):
 
     def __init__(self,client):
         self.client=client
-    
-    async def gametoid(self, gamename):
-        """Convert a game name to its ID"""
-        session = aiohttp.ClientSession()
-
-        async with session.get("http://api.steampowered.com/ISteamApps/GetAppList/v2") as r:
-            response = await r.json()
-        response = response['applist']['apps']
-        try:
-            gameid = next((item for item in response if item["name"] == gamename))
-        except StopIteration:
-            session.close()
-            return False
-        gameid = gameid['appid']
-        await session.close()
-        return gameid
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -132,12 +118,15 @@ class Utility(commands.Cog):
             await ctx.send(embed=embed)
     
     @commands.command(brief="Get the Store Link for a Steam app", usage=f'{prefix}steam [Search Query]')
-    async def steam(self, ctx, *, gamename):
-            gameid=await self.gametoid(gamename)
-            if gameid==False:
-                await ctx.send("Game not Found")
-            else:
-                await ctx.send(f'https://store.steampowered.com/app/{gameid}/')
+    async def steam(self, ctx, *, search_query):
+            try:
+                page = requests.get(f"https://store.steampowered.com/search/?term={search_query}", timeout=(3.05, 27))
+                steampage = BeautifulSoup(page.content, 'html.parser')
+                div = steampage.find("div", {"id": "search_resultsRows"})
+                links = div.find_all('a', href=True)
+                await ctx.send(links[0]['href'])
+            except:
+                await ctx.send("The requested search returned no results.")
 
 def setup(client):
     client.add_cog(Utility(client))
